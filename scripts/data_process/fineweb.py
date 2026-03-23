@@ -35,8 +35,8 @@ def set_args():
 
 
 def main(argv):
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
     num_samples = FLAGS.num_samples
     dataset = load_dataset(
         "HuggingFaceFW/fineweb",
