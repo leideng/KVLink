@@ -44,6 +44,7 @@ def main(argv):
     )
 
     # Shuffle and select early
+    random_seed = 42
     dataset = dataset.shuffle(seed=random_seed).select(range(0, num_samples))
     
     total_samples = len(dataset)
@@ -71,8 +72,7 @@ def main(argv):
     text_mem = filtered_dataset.select(range(0, len(filtered_dataset) // 2))
     text_inst = filtered_dataset.select(range(len(filtered_dataset) // 2, len(filtered_dataset)))
 
-    random_seed = 42
-    text = dataset.shuffle(seed=random_seed).select(range(0, num_samples))
+    text = dataset
 
 
     text_mem = text_mem.train_test_split(test_size=FLAGS.validation_size)
