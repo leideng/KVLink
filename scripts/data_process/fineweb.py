@@ -44,6 +44,9 @@ def main(argv):
         split="train"
     )
 
+    # Shuffle and select early
+    dataset = dataset.shuffle(seed=random_seed).select(range(0, num_samples))
+    
     total_samples = len(dataset)
     print("total samples num: ", total_samples)
 
