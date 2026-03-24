@@ -151,7 +151,7 @@ python src/data/titan_download_tokenizer.py \
     --hf_token=YOUR_HF_TOKEN
 ```
 
-To use `Llama-3.2-3B-Instruct`, replace `repo_id` with `meta-llama/Llama-3.2-3B-Instruct`
+To use `Llama-3.2-3B-Instruct`, replace `repo_id` with `alpindale/Llama-3.2-3B-Instruct`
 
 #### **Download the Model**
 Run the following command to download the model:
@@ -163,7 +163,7 @@ tune download alpindale/Llama-3.2-1B-Instruct \
     --hf-token YOUR_HF_TOKEN
 ```
 
-Similarly, for the `3B` model, replace `alpindale/Llama-3.2-1B-Instruct` with `meta-llama/Llama-3.2-3B-Instruct`
+Similarly, for the `3B` model, replace `alpindale/Llama-3.2-1B-Instruct` with `alpindale/Llama-3.2-3B-Instruct`
 
 ---
 
