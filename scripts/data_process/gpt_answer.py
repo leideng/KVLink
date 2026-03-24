@@ -70,15 +70,11 @@ def process_tqa(input_file: str, model:PreTrainedModel, retrieval_tokenizer:PreT
 
     return dataset
 
-def process_2wiki_instance(ins: Dict[str, Any], model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer, num_samples: int):
+def process_2wiki_instance(ins: Dict[str, Any], model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer):
     if isinstance(ins['context'], str):
         ins['context'] = json.loads(ins['context'])
 
     documents = [{"title":i[0], "text":''.join(i[1]), "score":0.0} for i in ins["context"]]
-    num_samples = min(num_samples, len(documents))
-    # we get the sliced documents instead of the original documents
-    # otherwise, it will take too much time to generate the answer for all instances
-    documents = documents[:num_samples]
     embeddings = compute_embeddings(
         sentences=[ins['question']] + [i['text'] for i in documents], model=model, tokenizer=retrieval_tokenizer
     )
@@ -98,12 +94,12 @@ def process_2wiki_instance(ins: Dict[str, Any], model:PreTrainedModel, retrieval
         "documents":documents[:10]
     }
 
-def process_2wiki(input_file: str, model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer):
+def process_2wiki(input_file: str, model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer, num_samples: int):
     df = pd.read_parquet(path=input_file)
     wiki_instances = df.to_dict(orient="records")
-
+    num_samples = min(num_samples, len(wiki_instances))
     dataset = []
-    for i in tqdm(range(0, len(wiki_instances)), desc="Process 2wiki: ", total=len(wiki_instances)):
+    for i in tqdm(range(0, num_samples), desc="Process 2wiki: ", total=num_samples):
         ins = process_2wiki_instance(ins=wiki_instances[i], model=model, retrieval_tokenizer=retrieval_tokenizer)
         dataset.append(ins)
 
