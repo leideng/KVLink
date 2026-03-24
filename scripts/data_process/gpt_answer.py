@@ -159,8 +159,8 @@ if __name__ == '__main__':
     retrieval_tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=model_name)
     model: PreTrainedModel = AutoModel.from_pretrained(
         pretrained_model_name_or_path=model_name,
-        torch_dtype=torch.bfloat16,
-        device_map="cuda:0"
+        dtype=torch.bfloat16,
+        device="cuda:0"
     )
     
     #num_samples = 20000
