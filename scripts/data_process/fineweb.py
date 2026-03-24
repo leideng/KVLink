@@ -16,7 +16,7 @@ from functools import partial
 from typing import Any, Dict, List
 
 from absl import app, flags
-from datasets import load_dataset
+from datasets import DatasetDict, load_dataset
 from transformers import AutoTokenizer
 
 FLAGS = flags.FLAGS
@@ -70,6 +70,16 @@ def _effective_test_size(dataset_len: int, requested: int) -> int:
 def _filter_by_min_length(examples: Dict[str, List[Any]], min_length: int):
     token_counts = examples["num_tokens"]
     return [x > min_length for x in token_counts]
+
+
+def _save_shards(
+    train_shards: int, test_shards: int, ds_dict: DatasetDict
+) -> Dict[str, int]:
+    """Avoid num_shards > split size (e.g. 128 shards for 1 row breaks save_to_disk)."""
+    return {
+        "train": max(1, min(train_shards, len(ds_dict["train"]))),
+        "test": max(1, min(test_shards, len(ds_dict["test"]))),
+    }
 
 
 def main(argv):
@@ -139,21 +149,21 @@ def main(argv):
         "text_inst test:",
         len(text_inst["test"]),
     )
-    shards = {"train": 128, "test": 4}
+    train_shards, test_shards = 128, 4
     save_proc = min(num_proc, 128)
     text.save_to_disk(
         "dataset_cache/processed/fineweb/text",
-        num_shards=shards,
+        num_shards=_save_shards(train_shards, test_shards, text),
         num_proc=save_proc,
     )
     text_mem.save_to_disk(
         "dataset_cache/processed/fineweb/text_mem",
-        num_shards=shards,
+        num_shards=_save_shards(train_shards, test_shards, text_mem),
         num_proc=save_proc,
     )
     text_inst.save_to_disk(
         "dataset_cache/processed/fineweb/text_inst",
-        num_shards=shards,
+        num_shards=_save_shards(train_shards, test_shards, text_inst),
         num_proc=save_proc,
     )
 
