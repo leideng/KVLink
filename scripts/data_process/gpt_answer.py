@@ -160,7 +160,7 @@ if __name__ == '__main__':
     model: PreTrainedModel = AutoModel.from_pretrained(
         pretrained_model_name_or_path=model_name,
         dtype=torch.bfloat16,
-        device="cuda:0"
+        device_map="cuda:0"
     )
     
     #num_samples = 20000
