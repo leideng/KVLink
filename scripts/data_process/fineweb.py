@@ -12,6 +12,7 @@ python scripts/data_process/fineweb.py --num_samples=10000000 --min_length_for_m
 """
 
 import os
+from functools import partial
 from typing import Any, Dict, List
 
 from absl import app, flags
@@ -55,6 +56,22 @@ def _num_proc() -> int:
     return max(1, min(os.cpu_count() or 1, 128))
 
 
+def _effective_test_size(dataset_len: int, requested: int) -> int:
+    """Clamp validation count so train_test_split is valid (test_size < n)."""
+    if dataset_len < 2:
+        raise ValueError(
+            "Cannot split a dataset with fewer than 2 rows after filtering "
+            f"(got {dataset_len}). Increase --num_samples or lower "
+            "--min_length_for_memory."
+        )
+    return min(requested, dataset_len - 1)
+
+
+def _filter_by_min_length(examples: Dict[str, List[Any]], min_length: int):
+    token_counts = examples["num_tokens"]
+    return [x > min_length for x in token_counts]
+
+
 def main(argv):
     tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
     num_samples = FLAGS.num_samples
@@ -86,12 +103,10 @@ def main(argv):
         num_proc=num_proc,
     )
 
-    def filter_fn(examples: Dict[str, List[Any]]):
-        token_counts = examples["num_tokens"]
-        return [x > FLAGS.min_length_for_memory for x in token_counts]
-
     filtered_dataset = dataset_with_token_num.filter(
-        filter_fn, batched=True, num_proc=num_proc
+        partial(_filter_by_min_length, min_length=FLAGS.min_length_for_memory),
+        batched=True,
+        num_proc=num_proc,
     )
     filtered_dataset = filtered_dataset.remove_columns("num_tokens")
 
@@ -99,9 +114,16 @@ def main(argv):
     text_mem = filtered_dataset.select(range(0, n_f // 2))
     text_inst = filtered_dataset.select(range(n_f // 2, n_f))
 
-    text = filtered_dataset.train_test_split(test_size=FLAGS.validation_size)
-    text_mem = text_mem.train_test_split(test_size=FLAGS.validation_size)
-    text_inst = text_inst.train_test_split(test_size=FLAGS.validation_size)
+    val = FLAGS.validation_size
+    text = filtered_dataset.train_test_split(
+        test_size=_effective_test_size(len(filtered_dataset), val)
+    )
+    text_mem = text_mem.train_test_split(
+        test_size=_effective_test_size(len(text_mem), val)
+    )
+    text_inst = text_inst.train_test_split(
+        test_size=_effective_test_size(len(text_inst), val)
+    )
 
     print(
         "text train:",
