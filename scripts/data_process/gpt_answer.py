@@ -117,7 +117,7 @@ def completion_with_backoff_mcopenai(**kwargs):
         client_kwargs["base_url"] = openai_base_url
     client = OpenAI(**client_kwargs)
     result = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="kimi-k2.5",
         **kwargs,
     )
     return result
