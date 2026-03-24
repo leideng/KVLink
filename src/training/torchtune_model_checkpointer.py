@@ -11,7 +11,7 @@ from torchtune.training.checkpointing._utils import (
 )
 
 MODEL_CONFIG_DICT = {
-    "meta-llama/Llama-3.2-1B-Instruct": {
+    "alpindale/Llama-3.2-1B-Instruct": {
         "num_attention_heads": 32,
         "num_hidden_layers": 16,
         "num_key_value_heads": 8,
@@ -36,7 +36,7 @@ def load_checkpoint(
 
     Args:
         ckpt_path: the path that store the model checkpoint downloaded from huggingface `original`
-        model_name: the HF model name, such as `meta-llama/Llama-3.2-1B-Instruct`
+        model_name: the HF model name, such as `alpindale/Llama-3.2-1B-Instruct`
     Returns:
         state_dict (Dict[str, Any]): torchtune checkpoint state dict
 

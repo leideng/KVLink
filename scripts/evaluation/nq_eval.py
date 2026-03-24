@@ -209,12 +209,12 @@ def main():
     print(all_answers[:10])
 
     # tokenizer = LLaMA32Tokenizer(model_path="data/titan_tokenizer/original/tokenizer.model")
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
     tokenizer.pad_token_id = 128004
     tokenizer.pad_token = "<|finetune_right_pad_id|>"
 
     model = LlamaForCausalLM.from_pretrained(
-        "meta-llama/Llama-3.2-1B-Instruct",
+        "alpindale/Llama-3.2-1B-Instruct",
         torch_dtype=torch.bfloat16,
         # torch_dtype=torch.float32,
     )

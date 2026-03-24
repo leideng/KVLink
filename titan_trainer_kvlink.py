@@ -6,13 +6,13 @@
 """
 1. Download the tokenizer
 python src/data/titan_download_tokenizer.py \
-    --repo_id meta-llama/Llama-3.2-1B-Instruct \
+    --repo_id alpindale/Llama-3.2-1B-Instruct \
     --tokenizer_path "original" \
     --local_dir data/titan_tokenizer/ \
     --hf_token=YOUR_HF_TOKEN
 
 2. Download the model
-tune download meta-llama/Llama-3.2-1B-Instruct \
+tune download alpindale/Llama-3.2-1B-Instruct \
     --output-dir model_cache/Llama-3.2-1B-Instruct \
     --ignore-patterns "original/consolidated.00.pth" \
     --hf-token YOUR_HF_TOKEN \
@@ -95,7 +95,7 @@ from src.training.torchtune_model_checkpointer import load_checkpoint
 
 CONFIG_DICT = {
     "data_original_step6k_bsz64_link_5_selective_ckpt": TitanTrainerConfig(
-        model_name_or_path="meta-llama/Llama-3.2-1B-Instruct",
+        model_name_or_path="alpindale/Llama-3.2-1B-Instruct",
         tokenizer_path="data/titan_tokenizer/original/tokenizer.model",
         dataset_version="original",
         seq_len=4096,
@@ -107,7 +107,7 @@ CONFIG_DICT = {
     ),
 
     "data_original_step6k_bsz64_link_5_full_ckpt": TitanTrainerConfig(
-        model_name_or_path="meta-llama/Llama-3.2-1B-Instruct",
+        model_name_or_path="alpindale/Llama-3.2-1B-Instruct",
         tokenizer_path="data/titan_tokenizer/original/tokenizer.model",
         dataset_version="original",
         seq_len=4096,
@@ -119,7 +119,7 @@ CONFIG_DICT = {
     ),
 
     "data_nosum_step6k_bsz64_link_5_full_ckpt": TitanTrainerConfig(
-        model_name_or_path="meta-llama/Llama-3.2-1B-Instruct",
+        model_name_or_path="alpindale/Llama-3.2-1B-Instruct",
         tokenizer_path="data/titan_tokenizer/original/tokenizer.model",
         dataset_version="nosum",
         seq_len=4096,
@@ -131,7 +131,7 @@ CONFIG_DICT = {
     ),
 
     "data_nosftmem_step6k_bsz64_link_5_full_ckpt": TitanTrainerConfig(
-        model_name_or_path="meta-llama/Llama-3.2-1B-Instruct",
+        model_name_or_path="alpindale/Llama-3.2-1B-Instruct",
         tokenizer_path="data/titan_tokenizer/original/tokenizer.model",
         dataset_version="nosftmem",
         seq_len=4096,
@@ -143,7 +143,7 @@ CONFIG_DICT = {
     ),
 
     "data_qaonly_step6k_bsz64_link_5_full_ckpt": TitanTrainerConfig(
-        model_name_or_path="meta-llama/Llama-3.2-1B-Instruct",
+        model_name_or_path="alpindale/Llama-3.2-1B-Instruct",
         tokenizer_path="data/titan_tokenizer/original/tokenizer.model",
         dataset_version="qaonly",
         seq_len=4096,
@@ -229,7 +229,7 @@ def main(config_name: str, use_wandb_for_log: bool = False):
     if use_hf_tokenizer:
         tokenizer = LLaMA32Tokenizer(tokenizer_path)
     else:
-        tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+        tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
     # build dataloader
     data_components = DATASET_MAPPING[task_config.dataset_version]
     data_collator = BlockAttnCollator(pad_token_idx=tokenizer.pad_id)

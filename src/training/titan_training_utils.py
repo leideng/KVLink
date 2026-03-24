@@ -103,5 +103,5 @@ SELECTIVE_ACTIVATION_CHECKPOINT_CONFIG = ActivationCheckpoint(
 )
 
 PRETRAINED_MODEL_CKPT_PATH_MAPS = {
-    "meta-llama/Llama-3.2-1B-Instruct": "model_cache/Llama-3.2-1B-Instruct/model.safetensors",
+    "alpindale/Llama-3.2-1B-Instruct": "model_cache/Llama-3.2-1B-Instruct/model.safetensors",
 }

@@ -38,7 +38,7 @@ def main(argv):
     shards = {'train': 128, 'test': 4}
     dataset = load_dataset("allenai/tulu-3-sft-mixture", split="train")
 
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
     max_length = FLAGS.max_length
 
     def sft_filter(sample):

@@ -32,7 +32,7 @@ def main(argv):
 
     total_num = len(dataset)
 
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
     max_length = FLAGS.max_length
 
     def xsum_filter(sample):

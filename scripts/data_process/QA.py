@@ -34,7 +34,7 @@ def main(argv):
     first_half = dataset.select(range(0, total_num // 2))
     second_half = dataset.select(range(total_num // 2, total_num))
 
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("alpindale/Llama-3.2-1B-Instruct")
     max_length = FLAGS.max_length
 
     def qa_filter(sample):

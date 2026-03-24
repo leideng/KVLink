@@ -145,7 +145,7 @@ Run the following command to download the tokenizer:
 
 ```bash
 python src/data/titan_download_tokenizer.py \
-    --repo_id meta-llama/Llama-3.2-1B-Instruct \
+    --repo_id alpindale/Llama-3.2-1B-Instruct \
     --tokenizer_path "original" \
     --local_dir data/titan_tokenizer/ \
     --hf_token=YOUR_HF_TOKEN
@@ -157,13 +157,13 @@ To use `Llama-3.2-3B-Instruct`, replace `repo_id` with `meta-llama/Llama-3.2-3B-
 Run the following command to download the model:
 
 ```bash
-tune download meta-llama/Llama-3.2-1B-Instruct \
+tune download alpindale/Llama-3.2-1B-Instruct \
     --output-dir model_cache/Llama-3.2-1B-Instruct \
     --ignore-patterns "original/consolidated.00.pth" \
     --hf-token YOUR_HF_TOKEN
 ```
 
-Similarly, for the `3B` model, replace `meta-llama/Llama-3.2-1B-Instruct` with `meta-llama/Llama-3.2-3B-Instruct`
+Similarly, for the `3B` model, replace `alpindale/Llama-3.2-1B-Instruct` with `meta-llama/Llama-3.2-3B-Instruct`
 
 ---
 
@@ -248,7 +248,7 @@ If a HuggingFace pretrained model is used, the argument 'hf' should be added. Fo
 
 ```
 python scripts/evaluation/hqa_eval.py \
-    --ckpt_path "meta-llama/Llama-3.2-1B-Instruct" \
+    --ckpt_path "alpindale/Llama-3.2-1B-Instruct" \
     --batch_size 10 \
     --reencode_num 5 \
     --attn_type "blocked" \
