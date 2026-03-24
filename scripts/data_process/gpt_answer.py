@@ -57,22 +57,29 @@ def process_tqa_instance(ins: Dict[str, Any], model:PreTrainedModel, retrieval_t
         "documents":documents[:10]
     }
 
-def process_tqa(input_file: str, model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer):
+def process_tqa(input_file: str, model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer, num_samples: int):
     with open(input_file, "r", encoding="utf-8") as f:
         tqa_instances: List[Dict[str, Any]] = json.load(f)
 
     dataset = []
-    for i in tqdm(range(0, len(tqa_instances)), desc="Process TQA: ", total=len(tqa_instances)):
+    # we get the sliced instances instead of the original instances
+    # otherwise, it will take too much time to generate the answer for all instances
+    num_samples = min(num_samples, len(tqa_instances))
+    for i in tqdm(range(0, num_samples), desc="Process TQA: ", total=num_samples):
         ins = process_tqa_instance(ins=tqa_instances[i], model=model, retrieval_tokenizer=retrieval_tokenizer)
         dataset.append(ins)
 
     return dataset
 
-def process_2wiki_instance(ins: Dict[str, Any], model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer):
+def process_2wiki_instance(ins: Dict[str, Any], model:PreTrainedModel, retrieval_tokenizer:PreTrainedTokenizer, num_samples: int):
     if isinstance(ins['context'], str):
         ins['context'] = json.loads(ins['context'])
 
     documents = [{"title":i[0], "text":''.join(i[1]), "score":0.0} for i in ins["context"]]
+    num_samples = min(num_samples, len(documents))
+    # we get the sliced documents instead of the original documents
+    # otherwise, it will take too much time to generate the answer for all instances
+    documents = documents[:num_samples]
     embeddings = compute_embeddings(
         sentences=[ins['question']] + [i['text'] for i in documents], model=model, tokenizer=retrieval_tokenizer
     )
@@ -157,11 +164,15 @@ if __name__ == '__main__':
         torch_dtype=torch.bfloat16,
         device_map="cuda:0"
     )
-    tqa_data = process_tqa(tqa_path, model, retrieval_tokenizer)
-    wiki_data = process_2wiki(wiki_path, model, retrieval_tokenizer)
     num_samples = 20000
-    tqa_data = random.sample(population=tqa_data, k=num_samples)
-    wiki_data = random.sample(population=wiki_data, k=num_samples)
+
+    # we only get the answer for the first num_samples instances instead of random sampling
+    # otherwise, it will take too much time to generate the answer for all instances
+    tqa_data = process_tqa(tqa_path, model, retrieval_tokenizer, num_samples)
+    wiki_data = process_2wiki(wiki_path, model, retrieval_tokenizer, num_samples)
+    
+    #tqa_data = random.sample(population=tqa_data, k=num_samples)
+    #wiki_data = random.sample(population=wiki_data, k=num_samples)
     merged_data = tqa_data + wiki_data
     random.shuffle(merged_data)
     generate_answer(merged_data)
