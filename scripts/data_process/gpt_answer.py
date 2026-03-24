@@ -14,13 +14,12 @@ import pandas as pd
 import torch
 from tqdm import tqdm
 from dotenv import load_dotenv
-from openai import AzureOpenAI
+from openai import OpenAI
 from transformers import AutoModel, AutoTokenizer, PreTrainedModel, PreTrainedTokenizer
 
 load_dotenv()
-api_key = os.getenv('api_key')
-api_version = os.getenv('api_version')
-azure_endpoint = os.getenv('azure_endpoint')
+api_key = os.getenv("OPENAI_API_KEY")
+openai_base_url = os.getenv("OPENAI_BASE_URL")
 
 @torch.no_grad()
 def compute_embeddings(sentences: List[str], model: PreTrainedModel, tokenizer: PreTrainedTokenizer):
@@ -111,13 +110,12 @@ def process_2wiki(input_file: str, model:PreTrainedModel, retrieval_tokenizer:Pr
     return dataset
 
 def completion_with_backoff_mcopenai(**kwargs):
-    client = AzureOpenAI(
-        # https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#rest-api-versioning
-        api_version=api_version,
-        # https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#create-a-resource
-        azure_endpoint=azure_endpoint,
-        api_key=api_key,
-    )
+    client_kwargs = {}
+    if api_key:
+        client_kwargs["api_key"] = api_key
+    if openai_base_url:
+        client_kwargs["base_url"] = openai_base_url
+    client = OpenAI(**client_kwargs)
     result = client.chat.completions.create(
         model="gpt-4o-mini",
         **kwargs,
