@@ -142,6 +142,9 @@ def load_jsonline(fp: str):
 
 
 def write_jsonline(fp: str, obj: List[Any]):
+    parent = os.path.dirname(fp)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
     with open(fp, "w", encoding="utf-8") as f:
         for i in obj:
             f.write(json.dumps(i, ensure_ascii=False) + "\n")
@@ -160,7 +163,7 @@ if __name__ == '__main__':
     )
     
     #num_samples = 20000
-    num_samples = 100 # for fast testing
+    num_samples = 2 # for fast testing
 
 
     # we only get the answer for the first num_samples instances instead of random sampling
