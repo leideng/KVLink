@@ -162,7 +162,10 @@ if __name__ == '__main__':
         torch_dtype=torch.bfloat16,
         device_map="cuda:0"
     )
-    num_samples = 20000
+    
+    #num_samples = 20000
+    num_samples = 100 # for fast testing
+
 
     # we only get the answer for the first num_samples instances instead of random sampling
     # otherwise, it will take too much time to generate the answer for all instances
